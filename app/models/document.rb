@@ -17,6 +17,10 @@ class Document
   before_create :create_corpus
   after_create :classify
   after_update :add_words_to_mega_vocabulary
+
+  def hello
+    :hello_world
+  end
   
   def training?
     status == "training"
