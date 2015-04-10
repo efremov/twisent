@@ -1,0 +1,6 @@
+%tr
+  %td= document.tweet
+  %td= document.corpus
+  %td
+    - Sentiment.all.each do |sentiment|
+      = link_to sentiment.category, document_path(document, document: {sentiment_id: sentiment.id}), method: :put
