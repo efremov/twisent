@@ -1,0 +1,17 @@
+#about
+  .landing_cta
+    %h2 DATMACHINE
+    %h1 Forgot your password?
+
+#contact
+  #contact-area{style: 'min-height: 250px;'}
+    = simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f|
+      .form-group
+        = f.input :email, required: false, autofocus: true, label: false, placeholder: 'Type in your email address', :input_html => {class: "form-control", required: true} 
+      #main{style: 'text-align: left'}
+        = f.button :submit, "Send me reset password instructions"  
+  #contact-foot
+    %h3 
+      Have any questions? 
+      = link_to ' Contact us', contact_path
+ 

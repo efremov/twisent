@@ -1,0 +1,85 @@
+class Company
+  include Mongoid::Document
+  field :name, type: String
+  field :stock_ticker_symbol, type: String
+  field :last_tweet_id
+  
+  has_many :documents
+  has_many :quotes
+  validates_presence_of :name
+  validates_presence_of :stock_ticker_symbol
+  
+  
+  def test
+	false
+  end
+
+  
+  def tweet_client
+    Twitter::REST::Client.new do |config|
+      config.consumer_key    = "CEV4wHSjQifzW5y7TPnhWB9Qz"
+      config.consumer_secret = "wFBcxUVEa9wJfcJzYUdd1wFYycc91zSYF53kr509t8NcJOeMMz"
+    end
+  end
+  
+  def keywords
+    name
+  end
+  
+  def query_params(options = {})
+    {result_type: "recent", language: "ru", since_id: last_tweet_id}.merge options
+  end
+  
+  def yahoo_ticker_symbol
+    stock_ticker_symbol + ".me"
+  end
+  
+  
+  
+  def load_finance_data
+    data = YahooFinance.quotes([yahoo_ticker_symbol], [:ask, :bid, :volume, :change_in_percent]).first
+    quote = quotes.find_or_create_by(created_at: Date.today)
+    quote.insert_quote({bid: data.bid.to_f, volume: data.volume.to_f, ask: data.ask.to_f, change_in_percent: data.change_in_percent.to_f})
+  end
+  
+  
+  
+  def load_tweets(status="real_data")
+    tweets = tweet_client.search(keywords, query_params).take(100)
+    tweets.each do |tweet|
+      document = documents.find_or_create_by(tweet: tweet.text.dup, status: status)
+      document.set(number_of_favorites: tweet.favorite_count, number_of_shares: tweet.retweet_count)
+      document.inc(number_of_followers: tweet.user.followers_count, number_of_friends: tweet.user.friends_count, user_verified: (tweet.user.verified? ? 1 : 0))
+    end
+    set(last_tweet_id: tweets.last.id)
+  end
+  
+  def clear_data
+    documents.delete_all
+    quotes.delete_all
+  end
+  
+  def self.clear_data
+    Company.all.each do |company|
+      company.clear_data
+    end
+    Word.delete_all
+  end
+    
+    
+    
+  
+  def self.load_data(status="real_data")
+    Company.all.each do |company|
+      company.load_finance_data
+      company.load_tweets(status)
+    end
+  end
+  
+  
+  
+  
+  
+  
+  
+end

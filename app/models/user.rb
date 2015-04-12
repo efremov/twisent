@@ -1,0 +1,45 @@
+class User
+  include Mongoid::Document
+
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :omniauthable
+  
+  ## Database authenticatable
+  field :email,              type: String, default: ""
+  field :encrypted_password, type: String, default: ""
+
+  ## Recoverable
+  field :reset_password_token,   type: String
+  field :reset_password_sent_at, type: Time
+
+  ## Rememberable
+  field :remember_created_at, type: Time
+
+  ## Omniauthable
+  field :provider, type: :string 
+  field :uid, type: :string
+  field :name, type: String
+
+  field :email, type: String
+  
+  validates_presence_of :email
+  validates_uniqueness_of :email
+  validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
+  
+  
+  def self.find_for_oauth(auth)
+    if where(uid: auth.uid, provider: auth.provider).exists?
+      find_by(uid: auth.uid, provider: auth.provider)
+    else
+      create(
+        uid: auth.uid, 
+        provider: auth.provider, 
+        name: auth.extra.raw_info.name,
+        email: auth.info.email ? auth.info.email : "#{auth.uid}@#{auth.provider}.com",
+        password: Devise.friendly_token[0,20]
+      )
+    end
+  end
+  
+  
+  
+end

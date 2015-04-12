@@ -18,6 +18,7 @@ class DocumentsController < ApplicationController
     end 
   end
   
+  private
   
   def fetch_document
     @document = Document.find(params[:id])
