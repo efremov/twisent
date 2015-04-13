@@ -16,6 +16,10 @@ class ApplicationController < ActionController::Base
     I18n.locale = params[:locale] || extract_locale
   end
   
+  def after_sign_in_path_for(resource_or_scope)
+    user_path(current_user)
+  end
+  
   private
   
   def extract_locale  

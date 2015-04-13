@@ -2,9 +2,8 @@ Devise.setup do |config|
   config.mailer_sender = 'support@datmachine.ru'
   require 'devise/orm/mongoid'
   
-  config.omniauth :facebook, "539050852903473", "0ceb91252342b0fc4f9c81ef90eba731"
-  config.omniauth :twitter, "CEV4wHSjQifzW5y7TPnhWB9Qz", "wFBcxUVEa9wJfcJzYUdd1wFYycc91zSYF53kr509t8NcJOeMMz"
-  #config.omniauth :twitter, "j0YUZ9LpKVXQjSq7knYz1Gtxy", "Dx06n1d6bA4TdbbTX6jQ6cVfMWLdPXrymObtGo0lo3HRvJ2qmJ"
+  config.omniauth :facebook, ENV["facebook_api_key"], ENV["facebook_api_secret"]
+  config.omniauth :twitter, ENV["twitter_api_key"], ENV["twitter_api_secret"]
 
   config.case_insensitive_keys = [ :email ]
   config.strip_whitespace_keys = [ :email ]

@@ -64,3 +64,4 @@ gem 'omniauth-facebook'
 gem "mongoid-paperclip", :require => "mongoid_paperclip"
 gem "unicode"
 gem 'ruby-stemmer', :require => 'lingua/stemmer'
+gem 'figaro'
