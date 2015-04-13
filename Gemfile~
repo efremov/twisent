@@ -16,8 +16,8 @@ group :test do
 end
 
 group :development do 
-  #gem 'capistrano'
-  #gem 'rvm-capistrano'
+  gem 'capistrano'
+  gem 'rvm-capistrano'
   gem 'spring'
 end
 

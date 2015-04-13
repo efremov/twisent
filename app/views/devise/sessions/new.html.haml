@@ -1,7 +1,7 @@
 .container-fluid
   .row
-    #authentication_form.col-md-8.col-md-offset-2      
-      .col-md-6.demo-left
+    #authentication_form.col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1      
+      .col-md-6.col-sm-6.demo-left
         %h4= t(:login)
         %p= t(:login_to_your_account)
       
@@ -13,7 +13,7 @@
           .form-group
             = f.button :submit, "#{t(:log_in)}", class: "btn", style: "background: #2ecc71;"
               
-      .col-md-6.demo-right
+      .col-md-6.col-sm-6.demo-right
         %h4= t(:login_with_social_networks)
         %p= t(:get_instant_access_to_app)
               

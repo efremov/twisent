@@ -10,7 +10,6 @@ ru:
   log_in: "войти"
   to_log_in: "войдите"
   log_out: "выйти"
-  logout: "выход"
   login_with_social_networks: "войти через социальные сети"
   login_to_your_account: "войдите в ваш Twisent аккаунт"
   sign_in_with_twitter: "Войти через твиттер"

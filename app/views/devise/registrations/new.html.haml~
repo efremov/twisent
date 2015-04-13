@@ -1,7 +1,7 @@
 .container-fluid
   .row
     #authentication_form.col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1       
-      .col-md-6.col-sm-6.demo-left
+      .col-md-6.demo-left
         %h4= t(:sign_up)
         %p= t(:fill_out_the_form_bellow)
       
@@ -13,7 +13,7 @@
           .form-group
             = f.button :submit, "#{t(:sign_up)}", class: "btn"
               
-      .col-md-6.col-sm-6.demo-right
+      .col-md-6.demo-right
         %h4= t(:log_in)
         %p= t(:get_instant_access_to_app)
               
