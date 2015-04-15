@@ -1,0 +1,33 @@
+/*
+  Place all the styles related to the matching controller here.
+  They will automatically be included in application.css.
+*/
+
+
+
+#new_ticket input
+{
+	  min-height: 40px;
+}
+
+#new_ticket textarea
+{
+	height:130px;
+}
+
+
+#new_ticket .btn{
+  padding: 15px;
+  width: 100%;
+  border-radius: 0;
+  text-transform: uppercase;
+  background: #2ecc71;
+  color: white;
+  font-weight: 700;
+}
+
+#new_ticket .btn:hover{
+	opacity: 0.8;
+}
+
+

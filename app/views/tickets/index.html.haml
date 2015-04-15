@@ -1,0 +1,10 @@
+.container
+  .row
+    .col-md-12
+
+      - @tickets.each do |ticket|
+        %h4
+          = ticket.email
+        %p
+          = ticket.message
+

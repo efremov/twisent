@@ -13,3 +13,8 @@ en:
   support: "support"
   faq: "FAQ"
   logout: "log out"
+  your_email_address: "Your email address"
+  name: "Your name"
+  tell_us_how_we_can_help_you: "Tell us how we can help you"
+  send_message: "send message"
+  thank_you_for_message: "Thank you for your message, we'll get back shortly."

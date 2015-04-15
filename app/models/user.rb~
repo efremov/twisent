@@ -1,8 +1,6 @@
 class User
   include Mongoid::Document
 
-  ADMINS = ["efremov@datmachine.ru", "ilya@datmachine.ru"]
-
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :omniauthable
   
   ## Database authenticatable

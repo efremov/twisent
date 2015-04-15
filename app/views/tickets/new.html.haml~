@@ -1,0 +1,16 @@
+.container
+  .row
+    .col-md-6.col-md-offset-3
+      %h1.page-title= t(:support)
+      %p.page-subtitle= t(:thank_you_for_message)
+      = simple_form_for @ticket, :html => { class: 'form-horizontal', novalidate: false, remote: true} do |f| 
+        .form-group
+          = f.input :name, label: false, placeholder: "#{t(:name)}", :input_html => {class: "form-control"}
+        .form-group
+          = f.input :email, as: :email, label: false, placeholder: "#{t(:your_email_address)}", :input_html => {class: "form-control", required: true}
+        .form-group
+          = f.input :message, as: :text, label: false, placeholder: "#{t(:tell_us_how_we_can_help_you)}", :input_html => {class: "form-control", required: true}
+
+        .form-group
+          = f.button :submit, "#{t(:send_message)}", class: "btn-default"
+

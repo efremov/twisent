@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   root to: "pages#landing"  
   resources :users, only: [:show]
 
-  get ":name,:email,meassage" => "tickets#new"
+  get ":name,:email,meassage" => "tickets#create"
   resources :tickets, only: [:new, :index, :create]
 
   

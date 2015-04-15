@@ -10,6 +10,7 @@ ru:
   log_in: "войти"
   to_log_in: "войдите"
   log_out: "выйти"
+  logout: "выход"
   login_with_social_networks: "войти через социальные сети"
   login_to_your_account: "войдите в ваш Twisent аккаунт"
   sign_in_with_twitter: "Войти через твиттер"
@@ -38,7 +39,7 @@ ru:
   contact_us: "Обратная связь"
   fill_out_form: "Заполните форму ниже, чтобы связаться с нами."
   tell_us_how_we_can_help_you: "Скажите, как мы можем вам помочь!"
-  send_message: "Отправить сообщение"
+  send_message: "отправить сообщение"
   get_support: "Отправить сообщение"
   try_to_find_answer: "Попробуйте найти ответ на ваш вопрос в"
   dont_have_account: "У вас ещё нет аккаунта?"
@@ -54,6 +55,5 @@ ru:
   date: "дата"
   activity_feed: "лента событий"
   show_more: "Показать ещё"
-  
-  
+  thank_you_for_message: "Спасибо за ваше сообщение, мы скоро свяжимся с вами!"
   
