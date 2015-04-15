@@ -8,6 +8,9 @@ Bundler.require(*Rails.groups)
 
 module TwitterSentiments
   class Application < Rails::Application
+    
+    config.time_zone = "Europe/Moscow"
+    
     config.i18n.default_locale = :ru
   end
 end

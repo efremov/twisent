@@ -1,8 +1,9 @@
 class DocumentsController < ApplicationController
   before_action :fetch_document, only: [:update] 
+  before_action :fetch_company, only: [:index, :update]
   
   def index
-    @documents = Document.training_set.where(sentiment_id: nil)
+    @documents = @company.documents.training_set.where(sentiment_id: nil)
     
     respond_to do |format|
       format.html
@@ -13,12 +14,16 @@ class DocumentsController < ApplicationController
   def update
     @document.update(document_params)
     respond_to do |format|
-      format.html {redirect_to documents_path}
+      format.html {redirect_to company_documents_path(@company)}
       format.js
     end 
   end
   
   private
+  
+  def fetch_company
+    @company = Company.find(params[:company_id])
+  end
   
   def fetch_document
     @document = Document.find(params[:id])

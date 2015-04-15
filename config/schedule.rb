@@ -1,3 +1,3 @@
-every 5.minutes do 
-  runner "Company.load_data('training')", :environment => 'development'
+every 1.minute do 
+  runner "Company.load_data(:train)", :environment => 'development'
 end

@@ -5,9 +5,9 @@ development:
       hosts:
         - localhost:27017
       options:
-
+        
   options:
-    
+    use_activesupport_time_zone: true
 test:
   sessions:
     default:
@@ -18,3 +18,4 @@ test:
         read: primary
         max_retries: 1
         retry_interval: 0
+
