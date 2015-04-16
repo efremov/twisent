@@ -1,0 +1,23 @@
+.container#main-dashboard
+  .row
+    - @companies.each do |company|
+      .col-md-6.col-sm-6.col-xs-12
+        %a{href: "#{company_path(company)}"}
+          .kpi
+            .kpi-left
+              .graph-container
+                .dashboard-line{id: "#{company.stock_ticker_symbol}"} 
+                  :javascript
+                    dashboard_line("##{company.stock_ticker_symbol}", #{company.dashboard_line}, "#{company.name.capitalize}" )
+            .kpi-right
+              .up_metrics
+                %span.metric_number
+                  = company.company_sentiment_index
+                .metric_description
+                  = t(:company_sentiment_index) 
+              .down_metrics
+                .metric_number
+                  = company.number_of_tweets
+                .metric_description
+                  = t(:number_of_tweets)
+                

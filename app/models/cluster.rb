@@ -5,6 +5,7 @@ class Cluster
   field :hourly, type: Hash, default: {}
   field :minutly, type: Hash, default: {}
   field :open, type: Float
+  field :close, type: Float
   field :positive, type: Integer, default: 0
   field :negative, type: Integer, default: 0
   field :neutral, type: Integer, default: 0
@@ -21,29 +22,37 @@ class Cluster
   def insert_sentiment(sentiment, moment = Time.now)
     inc("hourly.#{moment.hour}.#{sentiment}" => 1, "minutly.#{moment.hour * 60 + moment.min}.#{sentiment}" => 1, "#{sentiment}" => 1)
   end
-    
-  def default_data
-
-    (10..18).each do |hour|
-      self.hourly[hour.to_s] = DEFAULT_VALUES
-      (0..59).each do |minute|
-        self.minutly[(hour*60 + minute).to_s] = DEFAULT_VALUES
+  
+  def financial_date
+    YahooFinance.quotes([company.yahoo_ticker_symbol], [:open, :previous_close]).first
+  end
+  
+  def previous
+    company.clusters.where(created_at: created_at.yesterday).exists? ? company.clusters.find_by(created_at: created_at.yesterday) : nil
+  end
+  
+  def iok(pos = positive, neg = negative, neu = neutral)
+    pos - neg
+  end
+  
+  def growth
+    if close
+      close.fdiv(open)
+    else  
+      1139.downto(600).each do |minute|
+        return minutly[minute.to_s]["price"].fdiv(open).round(3) if minutly[minute.to_s]["price"] > 0
       end
     end
-    self.open = YahooFinance.quotes([company.yahoo_ticker_symbol], [:open]).first.open.to_f  
   end
-  
-  def get_price moment, granularity
-    if granularity == :hour
-      return hourly[moment.hour.to_s]["price"]
-    else
-      (0..10).each do |counter|
-        price = minutly[((moment - counter.minutes).hour * 60 + (moment - counter.minutes).min).to_s]["price"]
-        return price if price
-      end
-    end 
-    return nil
+    
+  def default_data
+    (10..18).each do |hour|
+      self.hourly[hour.to_s] = DEFAULT_VALUES
+      (0..59).each {|minute| self.minutly[(hour*60 + minute).to_s] = DEFAULT_VALUES }
+    end
+    
+    self.open = financial_date.open.to_f
+    previous.close = financial_date.previous_close.to_f if previous
   end
-  
     
 end

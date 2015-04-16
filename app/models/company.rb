@@ -20,8 +20,31 @@ class Company
     end
   end
   
+  def quiry(granularity = nil, period = nil)
+    Twisent::Aggregate.new(self, granularity, period)
+  end
+  
+  def transform(moment)
+    moment.to_time.to_i * 1000
+  end
+  
+  def dashboard_line
+    result = [{name: "Company sentiment index", data: [] }] 
+    quiry.data_set.each_pair {|date, metrics| result[0][:data] << [transform(date), metrics[:iok].round(3)]}
+    result[0][:data] = result[0][:data].last(10)
+    return result.to_json
+  end
+  
   def keywords
     name
+  end
+  
+  def number_of_tweets(date = Date.today)
+    documents.between(created_at: date.at_beginning_of_day..date.at_end_of_day).count
+  end
+  
+  def company_sentiment_index(date = Date.today)
+    clusters.find_or_create_by(created_at: date).iok
   end
   
   def query_params(options = {})

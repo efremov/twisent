@@ -1,0 +1,77 @@
+
+.kpi {
+    padding: 0px;
+    margin: 20px auto;
+    position: relative;
+    width: 100%;
+}
+
+.kpi-left {
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+    float: left;
+    width: 58%;
+}
+
+.graph-container {
+    position: relative;
+    width: 100%;
+}
+
+.graph-container > div {
+    width: 100%;
+}
+
+.kpi-right {
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+    float: left;
+    width: 42%;
+}
+
+
+.up_metrics, .down_metrics {
+    width: 100%;
+}
+
+.up_metrics {
+    margin-bottom: 10px;
+}
+
+.metric_number {
+    font-size: 40px;
+    font-weight: 300;
+}
+
+.metric_description {
+    color: #B8BFB6;
+    font-size: 16px;
+}
+
+.down_metrics .metric_number {
+    font-size: 30px;
+    font-weight: 200;
+    color: #333;
+}
+
+#main-dashboard .kpi {
+    border: medium none;
+    box-shadow: none;
+}
+
+#main-dashboard .kpi, #main-dashboard .kpi .graph-container, #main-dashboard .graph-container > div {
+    height: 250px;
+}
+
+#main-dashboard a:link, #main-dashboard a:visited, #main-dashboard a:hover {
+    color: #333;
+}
+
+
+
+
+

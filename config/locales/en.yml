@@ -18,3 +18,5 @@ en:
   tell_us_how_we_can_help_you: "Tell us how we can help you"
   send_message: "send message"
   thank_you_for_message: "Thank you for your message, we'll get back shortly."
+  number_of_tweets: "Number of tweets"
+  company_sentiment_index: "Company sentiment index"
