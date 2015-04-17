@@ -1,0 +1,33 @@
+#tab1.tab-pane.active{:role => "tabpanel"}
+  .container-fluid
+    .row
+      .col-md-12.col-sm-12
+        .kpi
+          %h4.page-header  
+            Индекс отношения к компании
+            %i.fa.fa-info-circle{title: "<p class='lead'>Customer lifetime value</p><p>Average revenue per account divided by customer churn rate</p><p class='lead'>Customer acquisition cost</p><p>Total costs divided by the number of new customers (both paying and trial).</p>", "data-toggle" => "tooltip"}
+          .graph-container
+            #company_sentiment_index_chart
+              - data = @company.company_sentiment_index_chart(@aggregated_data)
+              :javascript
+                company_sentiment_index_chart(#{data[0]}, #{data[1]})
+              
+          .summary_metrics
+                 
+
+          
+      .col-md-12.col-sm-12
+        .kpi
+          %h4.page-header 
+            Сантименты
+            %i.fa.fa-info-circle{title: "<p class='lead'>Time to recover CAC</p><p>Customer acquisition cost divided by average monthly revenue per customer.</p>", "data-toggle" => "tooltip"}
+          .graph-container
+            #sentiments_chart
+              :javascript
+                line_chart(#{@company.sentiments_chart(@aggregated_data)}, "#sentiments_chart", "tweets")
+          
+          .summary_metrics
+ 
+              
+#tab2.tab-pane{:role => "tabpanel"}
+#tab3.tab-pane{:role => "tabpanel"}

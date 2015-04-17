@@ -71,7 +71,132 @@
     color: #333;
 }
 
+.dashboard-nav{
+    display: inline-block;
+    width: 100%;
+    margin-bottom: -5px;
+    background: none repeat scroll 0% 0% #F7F8FA;
+    min-height: 60px;
+}
 
 
+.main-dashboard h1.page-header {
+    border-bottom: medium none;
+    margin: 20px 0px 10px;
+    padding: 0px;
+    font-size: 27px;
+}
+
+.top-dashboard .nav-tabs {
+    border: medium none;
+}
+
+.top-dashboard .nav-tabs li {
+    margin-right: 20px;
+}
+
+.top-dashboard .nav-tabs li.active {
+    border-bottom: 5px solid #1ABC9C;
+}
+
+.top-dashboard .nav-tabs li a {
+    color: #555;
+    text-decoration: none;
+    text-transform: uppercase;
+    padding: 15px 0px;
+    opacity: 0.7;
+    border: medium none;
+    font-size: 14px;
+    font-family: arial;
+}
+
+.top-dashboard .nav-tabs li.active a {
+    text-shadow: none;
+    opacity: 1;
+    background: none repeat scroll 0% 0% transparent;
+    border: medium none;
+}
+
+.dashboard-down {
+    border-top: 1px solid #DDD;
+}
+
+.tab-content {
+    background: none repeat scroll 0% 0% #FFF;
+}
+
+.tab-content > .tab-pane, .pill-content > .pill-pane {
+    display: block;
+    height: 0px;
+    overflow-y: hidden;
+}
+
+.tab-content > .active, .pill-content > .active {
+    height: auto;
+}
+
+.main-dashboard h4.page-header {
+    margin: 10px;
+    font-weight: 300;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.8);
+    border: medium none;
+}
+
+.kpi h4 i {
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.summary_metrics {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.summary_metric {
+    text-align: center;
+    display: inline-block;
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 0px 20px;
+    min-width: 200px;
+}
+
+.summary_metric_number {
+    font-size: 40px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    font-family: "CooperHewitt","Open Sans",open-sans,"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.summary_metric {
+    text-align: center;
+}
+
+.summary_description {
+    text-transform: uppercase;
+    line-height: 36px;
+}
+
+.date_filters {
+    font-size: 13px;
+    float: right;
+}
+
+#datepicker input {
+    border-radius: 0px;
+    width: 120px;
+}
+
+#datepicker .input-group-addon{
+  border-left: none;
+  border-right: none;
+}
+
+.top-dashboard .nav-tabs li a:hover {
+    border-color: transparent;
+    opacity: 1;
+    background: none repeat scroll 0% 0% transparent;
+}
 
 

@@ -81,7 +81,6 @@ Highcharts.theme = {
         }
       }
    },
-  
    legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
    background2: '#505053',
    dataLabelsColor: '#B0B0B3',
@@ -138,8 +137,6 @@ function dashboard_line(selector, data, name){
         title: {
           text: name
         },
-        
-        
         legend: {
           enabled: false
         },
@@ -150,7 +147,7 @@ function dashboard_line(selector, data, name){
                 year : '%Y'
             }
         },
-                navigator: {
+        navigator: {
           enabled: false
         },
         rangeSelector: {
@@ -171,4 +168,155 @@ function dashboard_line(selector, data, name){
         series: data
     });
   });     
+}
+
+function apply_filters(){
+  var today = new Date();
+  
+  $('#datepicker input').datepicker({
+    startView: 1,
+    minViewMode: 1,
+    format: "MM yyyy",
+    keyboardNavigation: true,
+    autoclose: true,
+    startDate: new Date(today.setMonth(today.getMonth() - 12)),
+    endDate: new Date()      
+  }); 
+  
+  var lastJQueryTS = 0 ;
+  $("#datepicker input").datepicker().on("changeDate", function(event){
+     var send = true;
+     if (typeof(event) == 'object'){
+       
+       if (event.timeStamp - lastJQueryTS < 300){
+         send = false;
+      }
+      lastJQueryTS = event.timeStamp;
+    }
+    if (send){
+      $.ajax({
+        url: window.location.pathname,
+        data: {
+          start: $("input[name=start]").val(),
+          finish: $("input[name=finish]").val()
+        },
+        dataType: "script"
+      });
+    }
+  }); 
+}
+
+function line_chart(data, selector, symbol){
+  
+  
+  $(function () {
+    $(selector).highcharts(  {
+        title: false,
+        colors: ["#03AC42", "#FA6B5B","#51B8F2"  ],
+        xAxis: {
+          type: 'datetime'
+        },
+        navigator: {
+          enabled: false
+        },
+        rangeSelector: {
+          enabled: data.length > 0 && data[0]["data"].length > 8
+        },
+        scrollbar: {
+          enabled: false
+        },
+        tooltip: {
+           shared: true,
+          valueSuffix:  ' ' + symbol
+          },
+        yAxis: {
+            labels: {
+            format: '{value} ' + symbol
+          },
+          min: 0
+        },
+        plotOptions: {
+            spline: {
+                marker: {
+                    enabled: false
+                }
+            }
+        },
+        series: data
+    }, function(chart){
+
+            // apply the date pickers
+            setTimeout(function () {
+                $('input.highcharts-range-selector', $(chart.container).parent())
+                .datepicker({startView: 1,minViewMode: 1,format: "yyyy-mm-dd",keyboardNavigation: true, autoclose: true});
+            }, 0);
+        });
+  });
+}
+
+function company_sentiment_index_chart(iok, changes ){
+
+  
+  $(function () {
+    $('#company_sentiment_index_chart').highcharts({
+        title: false,
+        colors: ["#28D8B2", "#FA6B5B"],
+        xAxis: {
+                type: 'datetime',
+            },
+        navigator: {
+          enabled: false
+        },
+        scrollbar: {
+          enabled: false
+        },
+        rangeSelector: {
+          enabled: iok.length > 6
+        },
+   
+        yAxis: [{ // Secondary yAxis
+            labels: {
+                format: '{value}',
+            },
+
+        }, {
+            gridLineWidth: 0,
+            title: {
+                text: false,
+            },
+            labels: {
+              format: '{value} %',
+            },
+            opposite: true
+        }],
+        tooltip: {
+            headerFormat: '<span style="font-size: 10px">{point.key}</span><br/>',
+            shared: true
+        },
+        series: [{
+            name: 'Company sentiment index',
+            type: 'spline',
+            data: iok,
+        },
+        {
+            name: 'Stock price change',
+            type: 'spline',
+            yAxis: 1,
+            data: changes,
+            tooltip: {
+                pointFormat: '<span style="color:{series.color}">\u25CF</span> Growth rate: {point.y:.1f} %'
+            }
+        }]
+    }, function(chart){
+
+            // apply the date pickers
+            setTimeout(function () {
+                $('input.highcharts-range-selector', $(chart.container).parent())
+                .datepicker({startView: 1,minViewMode: 1,format: "yyyy-mm-dd",keyboardNavigation: true, autoclose: true});
+            }, 0);
+        });
+        
+    
+  });
+
 }

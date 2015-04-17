@@ -9,7 +9,7 @@ class TicketsController < ApplicationController
   def create
     @ticket = Ticket.new(ticket_params)
     @ticket.save
-	respond_to do |format|
+	  respond_to do |format|
       format.html {redirect_to root_path}
       format.js
     end 		

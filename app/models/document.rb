@@ -147,7 +147,7 @@ class Document
     end
     
     add_words_to_mega_vocabulary
-    
+    destroy
   end
   
   

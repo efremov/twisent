@@ -37,10 +37,10 @@ class Cluster
   
   def growth
     if close
-      close.fdiv(open)
+      open > 0 ? close.fdiv(open) - 1 : 0
     else  
       1139.downto(600).each do |minute|
-        return minutly[minute.to_s]["price"].fdiv(open).round(3) if minutly[minute.to_s]["price"] > 0
+        return (minutly[minute.to_s]["price"].fdiv(open) - 1).round(3) if minutly[minute.to_s]["price"] > 0
       end
     end
   end
