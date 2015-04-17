@@ -14,7 +14,7 @@
   %body
     
     #content_wrapper
-      = render partial: "layouts/header"
+	  = render partial: "layouts/header"
       = yield
 
     = render partial: "layouts/footer"

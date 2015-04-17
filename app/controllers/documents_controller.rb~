@@ -3,7 +3,7 @@ class DocumentsController < ApplicationController
   before_action :fetch_company, only: [:index, :update]
   
   def index
-    @documents = @company.documents.training_set.where(sentiment_id: nil).paginate(:page => params[:page], per_page: 100)
+    @documents = @company.documents.training_set.where(sentiment_id: nil).paginate(:page => params[:page], per_page: 5)
     
     respond_to do |format|
       format.html

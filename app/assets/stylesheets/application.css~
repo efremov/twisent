@@ -88,6 +88,7 @@ ul {
   box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.1);
   min-height: 70px;
   background: white;
+  padding: 0px 30px;
 }
 
 
@@ -136,6 +137,7 @@ ul {
   line-height: 40px;
   text-transform: none;
   font-size: 18px;
+  display: none;
 }
 
 
@@ -146,6 +148,46 @@ form .form-control
   border-radius: 0;
   color: #3e3e3e;
   box-shadow: none;
+}
+
+#footer
+{
+  border-top: 1px solid #DDD;
+  box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.1);
+  width:100%;
+  padding-top: 30px;
+  padding-bottom: 30px;
+   font-weight: 300;
+}
+
+#footer a
+{
+  margin-right:30px;
+  margin-top:20px;
+  color: #999;
+  line-height: 64px;
+  font-size: 16px;
+  padding: 0px 15px;
+  text-transform: capitalize;
+}
+#footer a:hover
+{
+  color:black;
+}
+#footer ul
+{
+  margin:15px auto 30px;
+}
+
+#footer li
+{
+  display:inline-block;
+}
+#footer h4
+{
+  color: #999;
+  text-align: center;
+  font-weight: 300;
 }
 
 @media screen and (min-width: 1000px){
@@ -160,6 +202,10 @@ form .form-control
 		
 	}
 }
+
+
+
+
 
 
 

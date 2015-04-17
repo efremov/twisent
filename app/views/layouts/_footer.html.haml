@@ -1,0 +1,17 @@
+%footer#footer.container-fluid
+  .row
+    .col-md-12.text-center
+      %ul       
+        %li
+          %a{href: "#", alt: "#{t(:features)}"}= t(:features)
+        %li
+          %a{href: "#{new_ticket_path}", alt: "#{t(:support)}"}= t(:support)
+        %li
+          %a{href: "#", alt: "#{t(:faq)}"}= t(:faq)
+        %li
+          %a{href: "#{new_user_session_path}", alt: "#{t(:login)}"}= t(:login)
+        %li
+          %a{href: "#{new_user_registration_path}", alt: "#{t(:sign_up)}"}= t(:sign_up)
+      %h4 
+        &#169; Copyright, 2015
+       

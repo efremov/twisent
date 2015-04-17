@@ -15,7 +15,7 @@
           %li
             %a{href: "#", alt: "#{t(:features)}"}= t(:features)
           %li
-            %a{href: "new_ticket_path", alt: "#{t(:support)}"}= t(:support)
+            %a{href: "#{new_ticket_path}", alt: "#{t(:support)}"}= t(:support)
           %li
             %a{href: "#", alt: "#{t(:faq)}"}= t(:faq)
        
