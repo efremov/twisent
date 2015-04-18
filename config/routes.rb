@@ -6,14 +6,16 @@ Rails.application.routes.draw do
      resources :documents, only: [:index, :destroy, :edit, :update]
   end
   
-  
   root to: "pages#landing"  
   resources :users, only: [:show] 
     
   resources :companies, only: [:index, :show, :create, :destroy]
 
-  get ":name,:email,meassage" => "tickets#new"
   resources :tickets, only: [:new, :index, :create]
 
-  
+
+  resources :questions, only: [:new, :create, :edit, :update]
+  get "faq" => "questions#index"
+
+
 end

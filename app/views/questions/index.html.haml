@@ -1,0 +1,10 @@
+.container
+  .row
+    .col-md-12
+      %table
+      - @faqs.each do |faq|
+          %tr
+            %td
+            = faq.question
+            %td
+              = faq.answer

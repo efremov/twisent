@@ -21,7 +21,9 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_admin
-    redirect_to root_path unless current_user.present? && current_user.admin?
+    if Rails.env.production?
+      redirect_to root_path unless current_user.present? && current_user.admin?
+    end
   end
   
   private
