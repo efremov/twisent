@@ -23,6 +23,20 @@ class Company
   def quiry(granularity = nil, period = nil)
     Twisent::Aggregate.new(self, granularity, period)
   end
+
+  def api_quiry(metrics, granularity = nil, period=nil)
+    data = []
+    quiry(granularity, period).data_set.each_pair do |date, values| 
+      if metrics.class == Array
+        metrics.each_with_index do |metric, index|
+          (data[index] ||= []) << [transform(date), values[metric.to_sym].round(3)]
+        end
+      else
+        data << [transform(date), values[metrics.to_sym].round(3)]
+      end
+    end
+    return data.to_json
+  end
   
   def transform(moment)
     moment.to_time.to_i * 1000
@@ -47,17 +61,6 @@ class Company
     clusters.find_or_create_by(created_at: date).iok
   end
   
-  def sentiments_chart(aggregated_data)
-    result = [{name: "Positive", data: []  }, {name: "Negative", data: [] }, {name: "Neutral", data: [] }]
-    aggregated_data.data_set.each_pair {|date, metrics| result[0][:data] << [transform(date), metrics[:positive].round] && result[1][:data] << [transform(date), metrics[:negative].round] && result[2][:data] << [transform(date), metrics[:neutral].round]}
-    return result.to_json
-  end
-  
-  def company_sentiment_index_chart(aggregated_data)
-    csi,  growth = [], []
-    aggregated_data.data_set.each_pair {|date, metrics| csi << [transform(date), metrics[:iok].round(3)] && growth << [transform(date), 100 * metrics[:growth].round(2)]}
-    return csi.to_json,  growth.to_json
-  end
   
   def query_params(options = {})
     {result_type: "recent", language: "ru", since_id: last_tweet_id}.merge options

@@ -32,7 +32,7 @@ class Cluster
   end
   
   def iok(pos = positive, neg = negative, neu = neutral)
-    pos - neg
+    pos+neg+neu > 0 ? (pos - neg).fdiv(pos+neg+neu) : 0
   end
   
   def growth

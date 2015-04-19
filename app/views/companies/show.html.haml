@@ -6,8 +6,7 @@
           %h1.page-header   
             %span#section-name
               = @company.name
-            = render partial: "layouts/date_filters"
-          
+            = render partial: "granularity_buttons"
           .top-dashboard
             %ul.nav.nav-tabs{:role => "tablist"}
               %li.active{:role => "presentation"}

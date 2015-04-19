@@ -7,13 +7,13 @@ module Twisent
     
     def initialize(company, granularity = nil, period = nil)
       @company = company
-      @granularity = granularity || :day
+      @granularity = (granularity || :day).to_sym
       @period = period || {start: Time.now - 1.send(next_granularity), finish: Time.now}
       retrieve_data
     end
     
     def next_granularity
-      {minute: :hour, hour: :day, day: :week, week: :month, month: :year}[granularity]    
+      {minute: :day, hour: :day, day: :month, week: :month, month: :year}[granularity]    
     end
     
     def clusters

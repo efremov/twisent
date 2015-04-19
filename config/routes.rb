@@ -9,7 +9,9 @@ Rails.application.routes.draw do
   root to: "pages#landing"  
   resources :users, only: [:show] 
     
-  resources :companies, only: [:index, :show, :create, :destroy]
+  resources :companies, only: [:index, :show, :create, :destroy] do
+    get "api" => "companies#api", on: :member
+  end
 
   resources :tickets, only: [:new, :index, :create]
 
