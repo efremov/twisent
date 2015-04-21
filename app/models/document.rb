@@ -94,6 +94,7 @@ class Document
    return 0 if Word.count == 0
    (sentiment.words.where(name: word).sum(:frequency)+ 1).fdiv(sentiment.words.sum(:frequency) + Word.pluck(:name).uniq.count)
   end
+
   
   def naive_bayes_classifier
     probabilies = {}
@@ -108,8 +109,6 @@ class Document
     end
     return probabilies
   end
-  
-
   
   def most_probable_sentiment
     Sentiment.find(naive_bayes_classifier.max_by{|k,v| v}[0]) unless naive_bayes_classifier.empty?
@@ -131,19 +130,16 @@ class Document
     corpus.each { |word| sentiment.words.find_or_create_by(name: word).inc(frequency: 1) }   
   end
   
-  def created_at_msk
-    created_at.in_time_zone("Moscow")
-  end
   
   def aggregate_document
-    if created_at_msk.hour > 18
-      time = Time.new(created_at_msk.tomorrow.year, created_at_msk.tomorrow.month, created_at_msk.tomorrow.day, 10,0)
+    if created_at.hour > 15
+      time = Time.new(created_at.tomorrow.year, created_at.tomorrow.month, created_at.tomorrow.day, 7,0)
       company.clusters.find_or_create_by(created_at: created_at_msk.to_date.tomorrow).insert_sentiment(sentiment_name, time)
-    elsif created_at_msk.hour < 10
-      time = Time.new(created_at_msk.year, created_at_msk.month, created_at_msk.day, 10,0)
+    elsif created_at.hour < 7
+      time = Time.new(created_at.year, created_at.month, created_at.day, 7,0)
       company.clusters.find_or_create_by(created_at: created_at_msk.to_date).insert_sentiment(sentiment_name, time)
     else
-      company.clusters.find_or_create_by(created_at: created_at_msk.to_date).insert_sentiment(sentiment_name, created_at_msk)
+      company.clusters.find_or_create_by(created_at: created_at_msk.to_date).insert_sentiment(sentiment_name, created_at)
     end
     
     add_words_to_mega_vocabulary

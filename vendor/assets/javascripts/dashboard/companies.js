@@ -3,6 +3,7 @@ var HighchartsController = function () {
   var chart = null; 
   var element = null;
   var metrics = null;
+  var granularity = null;
   var aggregatedData = {};
 
   function buildURL(){
@@ -16,20 +17,23 @@ var HighchartsController = function () {
   this.initialize = function(metricsList, htmlElement){
     metrics = metricsList;
     element = htmlElement;
-    var url = buildURL();
-
-    $.each(["day", "minute", "hour"], function(index, value) {
-      $.getJSON(url + "&granularity=" + value, function (data) {
-        aggregatedData[value] = data;
-        if (index == 2)
-          drowChart("day");
-      })
-    });
-    
-    
+    loadDate("day", drowChart);
   }
 
-  function getButtons(granularity){
+  function loadDate(currentGranularity, callbackFunction){
+    granularity = currentGranularity;
+    if (aggregatedData[granularity] == undefined) {
+      $.getJSON(buildURL() + "&granularity=" + granularity, function (data) {
+        aggregatedData[granularity] = data;
+        callbackFunction(data);
+      })
+    }
+    else {
+      callbackFunction(aggregatedData[granularity], drowChart)
+    }
+  }
+
+  function getButtons(){
     switch(granularity)
     {
       case "day" :
@@ -43,7 +47,7 @@ var HighchartsController = function () {
 
   function redrowChart(granularity){
     chart.destroy();
-    drowChart(granularity);
+    loadDate(granularity, drowChart);
   }
 
   $(".granularity button").click(function() {
@@ -51,26 +55,27 @@ var HighchartsController = function () {
   })
 
 
-  function drowChart(granularity){
+  function drowChart(data){ 
     element.highcharts('StockChart',  {
       chart: {
         events: {
           load: function() {
             chart = this;
             $.each(metrics, function(index, value) {
-              if(aggregatedData[granularity][index] != null) {
+              if(data[index] != null) {
                 chart.addSeries({
                   id: value,
                   name: value,
-                  data: aggregatedData[granularity][index]
+                  data: data[index]
                 });
+                chart.hideLoading();
               }
             });
           }
         }
       },
       rangeSelector: {
-        buttons: getButtons(granularity)
+        buttons: getButtons()
       }
     });  
   }
@@ -92,7 +97,15 @@ Highcharts.theme = {
     enabled: true
   },
   xAxis: {
-    ordinal: true
+    // breaks: [{ // Nights
+    //   from: Date.UTC(2015, 9, 13, 15),
+    //   to: Date.UTC(2015, 9, 14, 7),
+    //   repeat: 24 * 36e5
+    // }, { // Weekends
+    //   from: Date.UTC(2015, 4, 17, 15),
+    //   to: Date.UTC(2015, 4, 20, 7),
+    //   repeat: 7 * 24 * 36e5
+    // }]
   }
 }
 
@@ -103,49 +116,6 @@ jQuery(document).on( 'shown.bs.tab', 'a[data-toggle="tab"]', function (e) { // o
         var chart = jQuery(this).highcharts(); // target the chart itself
         if (chart != "undefined"){
           chart.reflow() // reflow that chart
-        }
-        
+        }    
     });
 })
-
-
-function dashboard_line(selector, data, name){
-  
-  $(function () {
-    $(selector).highcharts({
-      
-        title: {
-          text: name
-        },
-        legend: {
-          enabled: false
-        },
-        xAxis: {
-          type: 'datetime',
-          dateTimeLabelFormats : {
-                month : '%b',
-                year : '%Y'
-            }
-        },
-        navigator: {
-          enabled: false
-        },
-        rangeSelector: {
-          enabled: false
-        },
-        yAxis: {
-           lineWidth: 0,
-           minorGridLineWidth: 0,
-          labels: {
-               enabled: false
-           },
-           minorTickLength: 0,
-           tickLength: 0,
-           gridLineWidth: 0,
-          min: 0
-        },
-       
-        series: data
-    });
-  });     
-}

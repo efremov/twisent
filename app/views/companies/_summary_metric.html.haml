@@ -1,0 +1,24 @@
+- if number && name
+  .summary_metric
+
+  
+    %span.summary_metric_number
+      - if (name.include? "growth") || (name.include? "Net")
+        - if number > 0
+          %i.fa.fa-caret-up{style: "color: #2ecc71;"}
+          = number_to_human(number, format: '%n%u', units: {thousand: 'K', million: 'M', billion: 'B' })
+        - else
+          %i.fa.fa-caret-down{style: "color: #e74c3c;"}
+          = number_to_human(- number, format: '%n%u', units: {thousand: 'K', million: 'M', billion: 'B' })        
+      - else
+        = number_to_human(number, format: '%n%u', units: {thousand: 'K', million: 'M', billion: 'B' })
+    
+    - if symbol == "%"
+      %span.metric_symbol.percent
+        = " %" 
+    - else
+      %span.metric_symbol
+        = " " + symbol      
+    
+    .summary_description
+      = name

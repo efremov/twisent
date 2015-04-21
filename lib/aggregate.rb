@@ -8,12 +8,31 @@ module Twisent
     def initialize(company, granularity = nil, period = nil)
       @company = company
       @granularity = (granularity || :day).to_sym
-      @period = period || {start: Time.now - 1.send(next_granularity), finish: Time.now}
+      @period = period || {start: last_working_minute - 1.send(next_granularity), finish: last_working_minute}
       retrieve_data
+    end
+
+    
+
+    def last_working_minute(moment = Time.now)
+      if moment.wday.between?(1, 5)
+        if moment.hour.between?(10, 17)
+          return moment
+        elsif moment.hour < 10
+          date = moment.to_date.previous_business_day
+          return Time.new(date.year, date.month, date.day, 18, 0,0)
+        else
+          date = moment.to_date
+          return Time.new(date.year, date.month, date.day, 18, 0,0)
+        end
+      else
+        date = moment.to_date.previous_business_day
+        return Time.new(date.year, date.month, date.day, 18, 0,0)
+      end
     end
     
     def next_granularity
-      {minute: :day, hour: :day, day: :month, week: :month, month: :year}[granularity]    
+      {minute: :day, hour: :week, day: :month, week: :month, month: :year}[granularity]    
     end
     
     def clusters
@@ -22,6 +41,7 @@ module Twisent
     
     
     def growth start_value, end_value
+      return 0 if start_value == end_value
       start_value != 0 ? end_value.fdiv(start_value) - 1 : 1
     end
     
@@ -67,7 +87,7 @@ module Twisent
         end
       when :day
         clusters.each do |cluster|
-          data[cluster.created_at] = {price: cluster.open, growth: cluster.growth, iok: cluster.iok, positive: cluster.positive, negative: cluster.negative, neutral: cluster.neutral}
+          data[cluster.created_at] = {price: cluster.open, growth: cluster.price_growth, iok: cluster.iok, positive: cluster.positive, negative: cluster.negative, neutral: cluster.neutral}
         end
       end
       

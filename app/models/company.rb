@@ -6,6 +6,7 @@ class Company
   slug  :name, :history => true
   field :stock_ticker_symbol, type: String
   field :last_tweet_id
+  field :correlation_coefs, type: Hash, default: {}
   
   has_many :documents
   has_many :clusters
@@ -29,13 +30,65 @@ class Company
     quiry(granularity, period).data_set.each_pair do |date, values| 
       if metrics.class == Array
         metrics.each_with_index do |metric, index|
-          (data[index] ||= []) << [transform(date), values[metric.to_sym].round(3)]
+          (data[index] ||= []) << [transform(date), values[metric.to_sym].round(3)] if values[metric.to_sym].present?
         end
       else
         data << [transform(date), values[metrics.to_sym].round(3)]
       end
     end
     return data.to_json
+  end
+
+  def find_lags(granularity = "day", metrics = ["iok", "growth"])
+    data = quiry_time_series(granularity, metrics)
+    correlation = {}
+    n = 1
+    
+    case granularity
+    when "day" 
+      n = 30
+    when "hour"
+      n = 8
+    when "minute"
+      n = 60
+    end
+      
+    (0..[n, data[0].count - 3].min).each do |lag|
+      correlation[lag] = correlation(data, lag)
+    end
+
+    result = correlation.sort_by {|_key, value| value.abs}.first(10).reverse.to_h
+
+    correlation_coefs[granularity] = result
+
+    set(correlation_coefs: correlation_coefs)
+    
+    return result
+
+  end
+
+
+  def quiry_time_series(granularity = "day", metrics = ["iok", "growth"],  period=nil)
+    data = []
+    quiry(granularity).data_set.each_pair do |date, values|
+      metrics.each_with_index do |metric, index|
+        (data[index] ||= []) << values[metric.to_sym].round(4)
+      end
+    end
+    return data
+  end
+
+
+  def correlation(data, lag = 0)
+    begin
+      R.converse("cor(a,b)", a: data[0].first(data[0].count - lag), b: data[1].last(data[0].count - lag))  
+    rescue
+      nil
+    end
+  end
+
+  def current_cluster
+    clusters.find_or_create_by(created_at: Date.today)
   end
   
   def transform(moment)
@@ -101,8 +154,16 @@ class Company
     
   def self.load_data(status=:real)
     Company.all.each do |company|
-      company.load_finance_data if Time.now.hour < 19 && Time.now.hour > 10
+      company.load_finance_data if Time.now.hour < 18 && Time.now.hour > 10
       company.load_tweets(status)
+    end
+  end
+
+  def self.build_model
+    Company.all.each do |company|
+      ["day", "hour", "minute"].each do |granularity|
+        company.find_lags(granularity)
+      end
     end
   end
    

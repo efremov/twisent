@@ -10,7 +10,8 @@
             #company_sentiment_index_chart{"data-metrics" => '["iok", "growth"]'}
               
           .summary_metrics
-                 
+            = summary_metric(@company.current_cluster.csi_growth * 100, "CSI growth rate","%")   
+            = summary_metric(@company.current_cluster.price_growth * 100, "Price growth rate","%")  
 
           
       .col-md-12.col-sm-12
@@ -22,6 +23,9 @@
             #sentiments_chart{"data-metrics" => '["positive", "negative", "neutral"]'}
           
           .summary_metrics
+            = summary_metric((@company.current_cluster.share_of "positive") * 100, "Share of positive","%")
+            = summary_metric((@company.current_cluster.share_of "negative") * 100, "Share of negative","%")
+            = summary_metric((@company.current_cluster.share_of "neutral") * 100, "Share of neutral","%")
  
               
 #tab2.tab-pane{:role => "tabpanel"}

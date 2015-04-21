@@ -23,8 +23,8 @@ class Cluster
     inc("hourly.#{moment.hour}.#{sentiment}" => 1, "minutly.#{moment.hour * 60 + moment.min}.#{sentiment}" => 1, "#{sentiment}" => 1)
   end
   
-  def financial_date
-    YahooFinance.quotes([company.yahoo_ticker_symbol], [:open, :previous_close]).first
+  def financial_data
+    YahooFinance.quotes([company.yahoo_ticker_symbol], [:open, :previous_close, :close]).first
   end
   
   def previous
@@ -34,16 +34,35 @@ class Cluster
   def iok(pos = positive, neg = negative, neu = neutral)
     pos+neg+neu > 0 ? (pos - neg).fdiv(pos+neg+neu) : 0
   end
-  
-  def growth
-    if close
-      open > 0 ? close.fdiv(open) - 1 : 0
-    else  
-      1139.downto(600).each do |minute|
-        return (minutly[minute.to_s]["price"].fdiv(open) - 1).round(3) if minutly[minute.to_s]["price"] > 0
+
+  def share_of sentiment
+    positive+negative+neutral > 0 ? send.sentiment.fdiv(positive+negative+neutral) : 0
+  end
+
+
+  def growth_rate start_value, end_value
+    return 0 if start_value == end_value
+
+    start_value && start_value != 0 ? end_value.fdiv(start_value) - 1 : nil
+  end
+
+  def price_growth moment = Time.now
+    return previous.growth if moment.hour < 10
+
+    if moment.hour > 17
+      set(close: financial_data[:close].to_f) if !close && moment.to_date == Date.today
+      return growth_rate(open, close)
+    else
+      [(moment.hour * 60 + moment.min), 1139].downto(600).each do |minute|
+        return growth_rate(minutly[minute.to_s]["price"], open) if minutly[minute.to_s]["price"] > 0
       end
     end
   end
+
+  def csi_growth
+    previous ? growth_rate(previous.iok, iok) : nil
+  end
+
     
   def default_data
     (10..18).each do |hour|
@@ -51,8 +70,8 @@ class Cluster
       (0..59).each {|minute| self.minutly[(hour*60 + minute).to_s] = DEFAULT_VALUES }
     end
     
-    self.open = financial_date.open.to_f
-    previous.close = financial_date.previous_close.to_f if previous
+    self.open = financial_data.open.to_f
+    previous.close = financial_data.previous_close.to_f 
   end
     
 end

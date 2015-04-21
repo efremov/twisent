@@ -166,7 +166,10 @@
     font-size: 40px;
     font-weight: 300;
     letter-spacing: 1px;
-    font-family: "CooperHewitt","Open Sans",open-sans,"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.summary_metric:last-child {
+    border: medium none;
 }
 
 .summary_metric {
