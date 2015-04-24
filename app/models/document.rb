@@ -8,7 +8,7 @@ class Document
   field :created_at, type: Time, default: Time.now
   
   validates_presence_of :tweet
-  validates_inclusion_of :status, :in => [:real, :test, :train]
+  validates_inclusion_of :status, :in => [:real, :tested, :train]
 
   
   belongs_to :sentiment
@@ -47,12 +47,9 @@ class Document
     where(status: :real)
   end
   
-  def test?
-    status == :test
-  end
   
   def self.testing_set
-    where(status: :test)
+    ne(sentiment_id: nil).ne(status: :tested).order("created_at desc")
   end
   
   def sentiment_name
@@ -134,12 +131,12 @@ class Document
   def aggregate_document
     if created_at.hour > 15
       time = Time.new(created_at.tomorrow.year, created_at.tomorrow.month, created_at.tomorrow.day, 7,0)
-      company.clusters.find_or_create_by(created_at: created_at_msk.to_date.tomorrow).insert_sentiment(sentiment_name, time)
+      company.clusters.find_or_create_by(created_at: created_at.to_date.tomorrow).insert_sentiment(sentiment_name, time)
     elsif created_at.hour < 7
       time = Time.new(created_at.year, created_at.month, created_at.day, 7,0)
-      company.clusters.find_or_create_by(created_at: created_at_msk.to_date).insert_sentiment(sentiment_name, time)
+      company.clusters.find_or_create_by(created_at: created_at.to_date).insert_sentiment(sentiment_name, time)
     else
-      company.clusters.find_or_create_by(created_at: created_at_msk.to_date).insert_sentiment(sentiment_name, created_at)
+      company.clusters.find_or_create_by(created_at: created_at.to_date).insert_sentiment(sentiment_name, created_at)
     end
     
     add_words_to_mega_vocabulary

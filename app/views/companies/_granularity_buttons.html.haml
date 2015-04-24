@@ -1,4 +1,10 @@
 .btn-group.granularity{:role => "group"}
-  %button.btn.btn-default{:type => "button", "data-granularity" => "day"} Daily
-  %button.btn.btn-default{:type => "button", "data-granularity" => "hour"} Hourly
-  %button.btn.btn-default{:type => "button", "data-granularity" => "minute"} Minutly
+  %button.btn.btn-default.active{:type => "button", "data-granularity" => "day"}= t(:daily)
+  %button.btn.btn-default{:type => "button", "data-granularity" => "hour"}= t(:hourly)
+  %button.btn.btn-default{:type => "button", "data-granularity" => "minute"}= t(:minutly)
+
+:javascript
+  $(".granularity button").click(function(){
+    $(".granularity button").removeClass("active");
+    $(this).addClass("active");
+  })

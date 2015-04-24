@@ -10,10 +10,12 @@ class Company
   
   has_many :documents
   has_many :clusters
+  has_one :accuracy_test
   validates_presence_of :name
   validates_presence_of :stock_ticker_symbol
   
-  
+
+
   def tweet_client
     Twitter::REST::Client.new do |config|
       config.consumer_key    = ENV["twitter_api_key"]
@@ -38,6 +40,7 @@ class Company
     end
     return data.to_json
   end
+
 
   def find_lags(granularity = "day", metrics = ["iok", "growth"])
     data = quiry_time_series(granularity, metrics)

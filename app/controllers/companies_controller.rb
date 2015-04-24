@@ -4,7 +4,6 @@ class CompaniesController < ApplicationController
   
   def show
     @aggregated_data = @company.quiry 
-    
     respond_to do |format|
       format.html
       format.js

@@ -10,12 +10,26 @@
           .top-dashboard
             %ul.nav.nav-tabs{:role => "tablist"}
               %li.active{:role => "presentation"}
-                %a{"aria-controls" => "home", "data-toggle" => "tab", :href => "#tab1", :role => "tab"} Сантименты
+                %a{"aria-controls" => "sentiments", "data-toggle" => "tab", :href => "#tab1", :role => "tab"} Сантименты
               %li{:role => "presentation"}
-                %a{"aria-controls" => "profile", "data-toggle" => "tab", :href => "#tab2", :role => "tab"} Прогноз
+                %a{"aria-controls" => "model", "data-toggle" => "tab", :href => "#tab2", :role => "tab"} Модель
               %li{:role => "presentation"}
                 %a{"aria-controls" => "messages", "data-toggle" => "tab", :href => "#tab3", :role => "tab"} Что-то
             
   .dashboard-down
     #executive-dashboard.tab-content
-      = render partial: "company"
+      #tab1.tab-pane.active{:role => "tabpanel"}
+        .container-fluid
+          = render partial: "company"
+      #tab2.tab-pane{:role => "tabpanel"}
+        .container-fluid
+          = render partial: "model"
+
+
+:javascript
+  $(function(){
+    $(".graph-container > div").each(function(){
+      var hc = new HighchartsController().initialize($(this).data("metrics"), $(this));
+    })
+  })
+  

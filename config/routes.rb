@@ -11,6 +11,8 @@ Rails.application.routes.draw do
     
   resources :companies, only: [:index, :show, :create, :destroy] do
     get "api" => "companies#api", on: :member
+    get "test" => "accuracy_tests#show", on: :member
+    put "test" => "accuracy_tests#update", on: :member
   end
 
   resources :tickets, only: [:new, :index, :create]

@@ -53,7 +53,7 @@ class Cluster
       set(close: financial_data[:close].to_f) if !close && moment.to_date == Date.today
       return growth_rate(open, close)
     else
-      [(moment.hour * 60 + moment.min), 1139].downto(600).each do |minute|
+      [(moment.hour * 60 + moment.min), 1139].min.downto(600).each do |minute|
         return growth_rate(minutly[minute.to_s]["price"], open) if minutly[minute.to_s]["price"] > 0
       end
     end
@@ -71,7 +71,7 @@ class Cluster
     end
     
     self.open = financial_data.open.to_f
-    previous.close = financial_data.previous_close.to_f 
+    previous.close = financial_data.previous_close.to_f if previous.present?
   end
     
 end

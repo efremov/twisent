@@ -1,0 +1,16 @@
+.container
+  .row
+    .col-md-8
+      %table.table.table-bordered
+        %thead
+          %tr
+            %th Date
+            %th Tweet
+        %tbody
+          - @documents.each do |document|
+            %tr{id: "#{document.id}"}
+              %td= document.created_at
+              %td= document.tweet
+              %td
+                - Sentiment.all.each do |sentiment|
+                  = link_to sentiment.category, test_company_path(@company, document_id: document.id, true_category: sentiment.category), method: :put, remote: true
