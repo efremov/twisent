@@ -1,4 +1,4 @@
-Datmachine::Application.configure do
+Rails.application.configure do
   config.cache_classes = true
   config.assets.paths << Rails.root.join('app', 'assets', 'fonts')
   config.assets.precompile += %w( .svg .eot .woff .ttf )
