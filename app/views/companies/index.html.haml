@@ -1,23 +1,35 @@
 .container#main-dashboard
   .row
-    - @companies.each do |company|
-      .col-md-6.col-sm-6.col-xs-12
-        %a{href: "#{company_path(company)}"}
-          .kpi
-            .kpi-left
-              .graph-container
-                .dashboard-line{id: "#{company.stock_ticker_symbol}"} 
-                  :javascript
-                    dashboard_line("##{company.stock_ticker_symbol}", #{company.dashboard_line}, "#{company.name.capitalize}" )
-            .kpi-right
-              .up_metrics
-                %span.metric_number
-                  = company.company_sentiment_index
-                .metric_description
-                  = t(:company_sentiment_index) 
-              .down_metrics
-                .metric_number
-                  = company.number_of_tweets
-                .metric_description
-                  = t(:number_of_tweets)
+    .col-md-6.col-md-offset-3
+      .page-title
+        %h1=t(:companies)
+  .row
+    .table-responsive
+      %table.table.table-bordered
+        %thead
+          %th ID
+          %th= t(:name)
+          %th= t(:stock_ticker_symbol)
+          %th= t(:tweets)
+          %th= t(:edit)
+          %th= t(:delete)
+        %tbody
+          - @companies.each do |company|
+            %tr
+              %td= company.id
+              %td= link_to company.name, company
+              %td= company.stock_ticker_symbol
+              %td= link_to t(:tweets), company_documents_path(company)
+              %td= link_to t(:edit), edit_company_path(company)
+              %td= link_to t(:delete), company, method: :delete
+
+
+
+    .btn-group
+      = link_to t(:new_company), new_company_path, class: "btn btn-default"
+
+
+      
+    
+      
                 

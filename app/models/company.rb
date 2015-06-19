@@ -44,30 +44,34 @@ class Company
 
   def find_lags(granularity = "day", metrics = ["iok", "growth"])
     data = quiry_time_series(granularity, metrics)
-    correlation = {}
-    n = 1
-    
-    case granularity
-    when "day" 
-      n = 30
-    when "hour"
-      n = 8
-    when "minute"
-      n = 60
-    end
+    correlation = []
+
       
-    (0..[n, data[0].count - 3].min).each do |lag|
-      correlation[lag] = correlation(data, lag)
+    (0..[10, data[0].count].min).each do |lag|
+      correlation << find_correlation(data, lag)
     end
+    
 
-    result = correlation.sort_by {|_key, value| value.abs}.first(10).reverse.to_h
-
-    correlation_coefs[granularity] = result
-
+    correlation_coefs[granularity] = correlation
     set(correlation_coefs: correlation_coefs)
     
-    return result
+    return correlation
 
+  end
+
+  def correlation_chart
+    series = [{name: I18n.t(:daily), data: []},{name: I18n.t(:hourly), data: []},{name: I18n.t(:minutly), data: []}]
+    correlation_coefs.each do |granularity, correlation|
+      case granularity
+      when "day"
+        series[0][:data] = correlation
+      when "hour"
+        series[1][:data] = correlation
+      when "minute"
+        series[2][:data] = correlation
+      end
+    end
+    return series.to_json
   end
 
 
@@ -82,9 +86,11 @@ class Company
   end
 
 
-  def correlation(data, lag = 0)
+  def find_correlation(data, lag = 0)
+    return nil if data[0].length - lag < 3
     begin
-      R.converse("cor(a,b)", a: data[0].first(data[0].count - lag), b: data[1].last(data[0].count - lag))  
+      correlation = R.converse("cor(a,b)", a: data[0].first(data[0].count - lag), b: data[1].last(data[0].count - lag)) 
+      correlation.class == Bignum ? 0 : correlation.round(3)
     rescue
       nil
     end
@@ -96,13 +102,6 @@ class Company
   
   def transform(moment)
     moment.to_time.to_i * 1000
-  end
-  
-  def dashboard_line
-    result = [{name: "Company sentiment index", data: [] }] 
-    quiry.data_set.each_pair {|date, metrics| result[0][:data] << [transform(date), metrics[:iok].round(3)]}
-    result[0][:data] = result[0][:data].last(10)
-    return result.to_json
   end
   
   def keywords
@@ -130,15 +129,21 @@ class Company
     data = YahooFinance.quotes([yahoo_ticker_symbol], [:bid]).first
     clusters.find_or_create_by(created_at: Date.today).insert_quote(data.bid.to_f)
   end
+
+  URI_REGEX = %r"((?:(?:[^ :/?#]+):)(?://(?:[^ /?#]*))(?:[^ ?#]*)(?:\?(?:[^ #]*))?(?:#(?:[^ ]*))?)"
+  def remove_url(tweet)
+    tweet.gsub!(URI_REGEX, '')
+  end
   
   def load_tweets(status)
     tweets = tweet_client.search(keywords, query_params).take(60)
     tweets.each do |tweet|
-      if documents.where(tweet: tweet.text.dup).ne(sentiment_in: nil).exists?
-        prev_tweet = documents.where(tweet: tweet.text.dup).ne(sentiment_in: nil).last
-        document = documents.create(tweet: tweet.text.dup, status: status, created_at: tweet.created_at, number_of_followers: tweet.user.followers_count, number_of_friends: tweet.user.friends_count, user_verified: (tweet.user.verified? ? 1 : 0), sentiment_id: prev_tweet.sentiment_id)
+      tweet_message = remove_url(tweet.text.dup)
+      if documents.where(tweet: tweet_message).ne(sentiment_in: nil).exists?
+        prev_tweet = documents.where(tweet: tweet_message).ne(sentiment_in: nil).last
+        document = documents.create(tweet: tweet_message, status: status, created_at: tweet.created_at, number_of_followers: tweet.user.followers_count, number_of_friends: tweet.user.friends_count, user_verified: (tweet.user.verified? ? 1 : 0), sentiment_id: prev_tweet.sentiment_id)
       else
-        document = documents.create(tweet: tweet.text.dup, status: status, created_at: tweet.created_at, number_of_followers: tweet.user.followers_count, number_of_friends: tweet.user.friends_count, user_verified: (tweet.user.verified? ? 1 : 0))
+        document = documents.create(tweet: tweet_message, status: status, created_at: tweet.created_at, number_of_followers: tweet.user.followers_count, number_of_friends: tweet.user.friends_count, user_verified: (tweet.user.verified? ? 1 : 0))
       end
     end
     set(last_tweet_id: tweets.last.id)
@@ -147,6 +152,8 @@ class Company
   def clear_data
     documents.delete_all
     clusters.delete_all
+    set(correlation_coefs: {}, last_tweet_id: nil)
+    accuracy_test.delete if accuracy_test.present?
   end
   
   def self.clear_data

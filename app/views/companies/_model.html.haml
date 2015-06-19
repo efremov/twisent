@@ -1,4 +1,19 @@
 .row
   .col-md-7
-    = render @company.accuracy_test
+    - if @company.accuracy_test
+      = render @company.accuracy_test
+    - else
+      .kpi
+        %h4.page-header= t(:classification)
+        = link_to t(:start_test), test_company_path(@company)
 
+.row
+  .col-md-12.col-sm-12
+    .kpi
+      %h4.page-header  
+        = t(:correlation)
+        %i.fa.fa-info-circle{title: "123", "data-toggle" => "tooltip"}
+      .graph-container
+        #correlation_chart
+          :javascript
+            correlation_chart(#{@company.correlation_chart})

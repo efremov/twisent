@@ -23,7 +23,8 @@ var HighchartsController = function () {
   function loadDate(currentGranularity, callbackFunction){
     granularity = currentGranularity;
     if (aggregatedData[granularity] == undefined) {
-      $.getJSON(buildURL() + "&granularity=" + granularity, function (data) {
+      console.log(buildURL() + "granularity=" + granularity);
+      $.getJSON(buildURL() + "granularity=" + granularity, function (data) {
         aggregatedData[granularity] = data;
         callbackFunction(data);
       })
@@ -74,6 +75,7 @@ var HighchartsController = function () {
           }
         }
       },
+
       rangeSelector: {
         buttons: getButtons()
       }
@@ -95,17 +97,6 @@ Highcharts.theme = {
   },
   scrollbar: {
     enabled: true
-  },
-  xAxis: {
-    // breaks: [{ // Nights
-    //   from: Date.UTC(2015, 9, 13, 15),
-    //   to: Date.UTC(2015, 9, 14, 7),
-    //   repeat: 24 * 36e5
-    // }, { // Weekends
-    //   from: Date.UTC(2015, 4, 17, 15),
-    //   to: Date.UTC(2015, 4, 20, 7),
-    //   repeat: 7 * 24 * 36e5
-    // }]
   }
 }
 
@@ -119,3 +110,33 @@ jQuery(document).on( 'shown.bs.tab', 'a[data-toggle="tab"]', function (e) { // o
         }    
     });
 })
+
+function correlation_chart(data){
+  $(function () {
+    $('#correlation_chart').highcharts({
+        chart: {
+            type: 'column'
+        },
+        navigator: {
+          enabled: false
+        },
+        rangeSelector: {
+          enabled: false
+        },
+        scrollbar: {
+          enabled:false
+        },
+        xAxis: {
+            type: "linear",
+            title: {text: "Lag"}    
+        },
+        yAxis: {
+          min: -1,
+          max: 1,
+          title: {text: "Correlation coefficient"}
+        },
+
+        series: data
+    });
+});
+}

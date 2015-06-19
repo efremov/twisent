@@ -57,10 +57,15 @@ class Document
   end
   
   def corpus
+    remove_meta
     #indexed text and query terms must have the same format
     normalize tokenize
   end
   
+  def remove_meta
+    tweet.gsub!(/\B[@#]\S+\b/, '')
+  end
+
   def tokenize
     tweet.split(" ").map {|word| word.downcase.gsub(/[^а-я]/, '')}
   end
@@ -70,17 +75,20 @@ class Document
   end
   
   def reverse_negations(words = [])
+
     (1..words.count).each do |counter|
       if words[counter - 1] == "не"
         words[counter] = "не_" + words[counter]
         words.delete_at(counter - 1)
       end
     end
+
     return words
   end
   
   def stemming(words = [])
-    Lingua.stemmer(words, :language => "ru" )
+    stemmed_words = Lingua.stemmer(words, :language => "ru" )
+    return stemmed_words.class == Array ? stemmed_words : [stemmed_words]
   end
   
   def remove_duplicates(words = [])
@@ -140,7 +148,7 @@ class Document
     end
     
     add_words_to_mega_vocabulary
-    destroy
+    #destroy
   end
   
   

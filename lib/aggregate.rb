@@ -42,7 +42,7 @@ module Twisent
     
     def growth start_value, end_value
       return 0 if start_value == end_value
-      start_value != 0 ? end_value.fdiv(start_value) - 1 : 1
+      end_value && start_value && start_value != 0 ? end_value.fdiv(start_value) - 1 : 1
     end
     
     
@@ -51,8 +51,8 @@ module Twisent
       case granularity
       when :minute
         prev_value = 0
-        clusters.each do |cluster|
-          cluster.minutly.each do |identificator, values|
+        clusters.order("created_at asc").each do |cluster|
+          cluster.minutly.sort_by{|k,v| k.to_i}.to_h.each do |identificator, values|
             moment = Time.new(cluster.created_at.year, cluster.created_at.month, cluster.created_at.day, identificator.to_i / 60, identificator.to_i % 60, 1)
             if moment.between? period[:start], period[:finish]
               data[moment] = {
@@ -60,7 +60,7 @@ module Twisent
                 positive: values["positive"],
                 negative: values["negative"],
                 neutral: values["neutral"],
-                iok: cluster.iok(values["positive"], values["negative"], values["neutral"]),
+                iok: cluster.iok(values["positive"] || 0, values["negative"] || 0, values["neutral"] || 0),
                 price: values["price"]
               }
               prev_value = values["price"]
@@ -69,8 +69,8 @@ module Twisent
         end
       when :hour
         prev_value = 0
-        clusters.each do |cluster|
-          cluster.hourly.each do |identificator, values|
+        clusters.order("created_at asc").each do |cluster|
+          cluster.hourly.sort_by{|k,v| k.to_i}.to_h.each do |identificator, values|
             moment = Time.new(cluster.created_at.year, cluster.created_at.month, cluster.created_at.day, identificator.to_i, 1, 1)
             if moment.between? period[:start], period[:finish]
               data[moment] = {
@@ -86,7 +86,7 @@ module Twisent
           end
         end
       when :day
-        clusters.each do |cluster|
+        clusters.order("created_at asc").each do |cluster|
           data[cluster.created_at] = {price: cluster.open, growth: cluster.price_growth, iok: cluster.iok, positive: cluster.positive, negative: cluster.negative, neutral: cluster.neutral}
         end
       end

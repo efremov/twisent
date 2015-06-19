@@ -13,11 +13,9 @@
       %nav#navigation-menu.navbar-collapse.collapse
         %ul.nav.navbar-nav.navbar-left           
           %li
-            %a{href: "#", alt: "#{t(:features)}"}= t(:features)
+            %a{href: "#{companies_path}", alt: "#{t(:companies)}"}= t(:companies)
           %li
             %a{href: "#{new_ticket_path}", alt: "#{t(:support)}"}= t(:support)
-          %li
-            %a{href: "#{faq_path}", alt: "#{t(:faq)}"}= t(:faq)
        
         %ul.nav.navbar-nav.navbar-right 
           - if user_signed_in? 

@@ -28,7 +28,8 @@ class ApplicationController < ActionController::Base
   
   private
   
-  def extract_locale  
+  def extract_locale
+    return "ru"  
     parsed_locale = request.host.split('.').last
     return locale.to_s.scan(/^[a-z]{2}/).first if (locale = request.env['HTTP_ACCEPT_LANGUAGE']) && (I18n.available_locales.map(&:to_s).include? locale.to_s.scan(/^[a-z]{2}/).first)
     false

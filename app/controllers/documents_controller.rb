@@ -3,7 +3,8 @@ class DocumentsController < ApplicationController
   before_action :fetch_company, only: [:index, :update]
   
   def index
-    @documents = @company.documents.training_set.where(sentiment_id: nil).paginate(:page => params[:page], per_page: 100)
+    docs = @company ? @company.documents : Document.all
+    @documents = docs.training_set.where(sentiment_id: nil).paginate(:page => params[:page], per_page: 100)
     
     respond_to do |format|
       format.html
@@ -22,7 +23,7 @@ class DocumentsController < ApplicationController
   private
   
   def fetch_company
-    @company = Company.find(params[:company_id])
+    @company = params[:company_id] ? Company.find(params[:company_id]) : nil
   end
   
   def fetch_document

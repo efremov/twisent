@@ -13,6 +13,9 @@ class Cluster
   DEFAULT_VALUES = {"price" => 0, "positive" => 0, "negative" => 0, "neutral" => 0}
   
   before_create :default_data
+
+  default_scope -> {order('created_at asc') }
+
   
   def insert_quote(stock_info, moment = Time.now)
     inc("minutly.#{moment.hour * 60 + moment.min}.price" => stock_info) unless minutly[(moment.hour * 60 + moment.min).to_s]["price"] > 0
@@ -36,7 +39,7 @@ class Cluster
   end
 
   def share_of sentiment
-    positive+negative+neutral > 0 ? send.sentiment.fdiv(positive+negative+neutral) : 0
+    positive+negative+neutral > 0 ? send(sentiment).fdiv(positive+negative+neutral) : 0
   end
 
 

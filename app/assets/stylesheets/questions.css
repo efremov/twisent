@@ -17,3 +17,11 @@
 {
   margin-bottom: 40px;
 }
+
+table th{
+	text-transform: capitalize;
+}
+
+#main-dashboard table a:link, #main-dashboard table a:visited{
+	color: blue;
+}

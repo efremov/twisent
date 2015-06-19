@@ -72,3 +72,13 @@ ru:
   minutly: "минута"
   daily: "день"
   hourly: "час"
+  classification: "классификация"
+  correlation: "корреляция"
+  stock_ticker_symbol: символ
+  save: сохранить
+  new_company: новая компания
+  edit_company: редактировать компанию
+  companies: компании
+  edit: редактировать
+  delete: удалить
+  start_test: начать тест

@@ -14,7 +14,7 @@
               %li{:role => "presentation"}
                 %a{"aria-controls" => "model", "data-toggle" => "tab", :href => "#tab2", :role => "tab"} Модель
               %li{:role => "presentation"}
-                %a{"aria-controls" => "messages", "data-toggle" => "tab", :href => "#tab3", :role => "tab"} Что-то
+                %a{"aria-controls" => "messages", "data-toggle" => "tab", :href => "#tab3", :role => "tab"} Прогноз
             
   .dashboard-down
     #executive-dashboard.tab-content
@@ -28,7 +28,7 @@
 
 :javascript
   $(function(){
-    $(".graph-container > div").each(function(){
+    $('[data-chart="true"]').each(function(){
       var hc = new HighchartsController().initialize($(this).data("metrics"), $(this));
     })
   })

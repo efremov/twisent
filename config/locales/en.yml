@@ -24,6 +24,8 @@ en:
   negative: "negative"
   neutral: "neutral"
   real: "real"
+  email: "Email"
+  password: "Password"
   assigned: "assigned"
   recall: "recall"
   ppv: "PPV"
@@ -34,3 +36,13 @@ en:
   minutly: "minutly"
   daily: "daily"
   hourly: "hourly"
+  classification: "classification"
+  correlation: "correlation"
+  stock_ticker_symbol: stock symbol
+  save: save
+  new_company: new company
+  edit_company: edit company
+  companies: companies
+  edit: edit
+  delete: delete
+  start_test: start test
