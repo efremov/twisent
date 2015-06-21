@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
   end
   
   def after_sign_in_path_for(resource_or_scope)
-    user_path(current_user)
+    companies_path
   end
 
   def authenticate_admin

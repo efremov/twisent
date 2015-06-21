@@ -22,8 +22,8 @@ class Cluster
     inc("hourly.#{moment.hour}.price" => stock_info) unless hourly[moment.hour.to_s]["price"] > 0
   end
   
-  def insert_sentiment(sentiment, moment = Time.now)
-    inc("hourly.#{moment.hour}.#{sentiment}" => 1, "minutly.#{moment.hour * 60 + moment.min}.#{sentiment}" => 1, "#{sentiment}" => 1)
+  def insert_sentiment(sentiment, moment = Time.now, reliability = 1)
+    inc("hourly.#{moment.hour}.#{sentiment}" => reliability, "minutly.#{moment.hour * 60 + moment.min}.#{sentiment}" => reliability, "#{sentiment}" => reliability)
   end
   
   def financial_data

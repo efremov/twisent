@@ -20,7 +20,7 @@ group :development do
   gem 'rvm-capistrano'
   gem 'spring'
 end
-
+gem "nas-yahoo_stock"
 group :assets do
   gem 'sass-rails'
   gem 'execjs'

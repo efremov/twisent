@@ -135,16 +135,19 @@ class Document
     corpus.each { |word| sentiment.words.find_or_create_by(name: word).inc(frequency: 1) }   
   end
   
+  def reliability
+    number_of_friends > 0 ? number_of_followers.fdiv(number_of_friends) : 0
+  end
   
   def aggregate_document
-    if created_at.hour > 15
+    if created_at.hour > 18
       time = Time.new(created_at.tomorrow.year, created_at.tomorrow.month, created_at.tomorrow.day, 7,0)
-      company.clusters.find_or_create_by(created_at: created_at.to_date.tomorrow).insert_sentiment(sentiment_name, time)
-    elsif created_at.hour < 7
+      company.clusters.find_or_create_by(created_at: created_at.to_date.tomorrow).insert_sentiment(sentiment_name, time, reliability)
+    elsif created_at.hour < 10
       time = Time.new(created_at.year, created_at.month, created_at.day, 7,0)
-      company.clusters.find_or_create_by(created_at: created_at.to_date).insert_sentiment(sentiment_name, time)
+      company.clusters.find_or_create_by(created_at: created_at.to_date).insert_sentiment(sentiment_name, time, reliability)
     else
-      company.clusters.find_or_create_by(created_at: created_at.to_date).insert_sentiment(sentiment_name, created_at)
+      company.clusters.find_or_create_by(created_at: created_at.to_date).insert_sentiment(sentiment_name, created_at, reliability)
     end
     
     add_words_to_mega_vocabulary

@@ -13,7 +13,10 @@ class AccuracyTestsController < ApplicationController
 		
 		if params[:document_id] && params[:true_category]
 			@document = Document.find(params[:document_id])
-			@test.insert_document(params[:true_category], @document) if @document
+			if @document
+				@test ||= AccuracyTest.create(company_id: @company.id)
+				@test.insert_document(params[:true_category], @document)
+			end 
 		end
 
 		respond_to do |format|

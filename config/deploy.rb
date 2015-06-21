@@ -29,7 +29,7 @@ role :app, domain
 
 after "deploy:start", "delayed_job:start"
 after "deploy:stop", "delayed_job:stop"
-after "deploy:restart", "deploy:cleanup", "delayed_job:stop","delayed_job:start", "deploy:write_crontab"
+after "deploy:restart", "deploy:write_crontab"
 
 namespace :deploy do
   desc "Write the crontab file"

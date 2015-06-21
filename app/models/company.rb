@@ -47,7 +47,7 @@ class Company
     correlation = []
 
       
-    (0..[10, data[0].count].min).each do |lag|
+    (0..[9, data[0].count].min).each do |lag|
       correlation << find_correlation(data, lag)
     end
     
@@ -130,9 +130,35 @@ class Company
     clusters.find_or_create_by(created_at: Date.today).insert_quote(data.bid.to_f)
   end
 
+  def load_historian_data
+    data = YahooFinance.historical_quotes([yahoo_ticker_symbol], { start_date: Time::now-2.weeks, end_date: Time::now })
+    data.each do |financial_data|
+      cluster = clusters.find_or_create_by(created_at: financial_data.trade_date.to_date)
+      cluster.set(close: financial_data[:close].to_f)
+      cluster.set(open: financial_data[:open].to_f)
+    end
+  end
+
   URI_REGEX = %r"((?:(?:[^ :/?#]+):)(?://(?:[^ /?#]*))(?:[^ ?#]*)(?:\?(?:[^ #]*))?(?:#(?:[^ ]*))?)"
   def remove_url(tweet)
     tweet.gsub!(URI_REGEX, '')
+  end
+
+  def load_historical_tweets
+    status = :train
+    (2..9).each do |i|
+      params = {:result_type=>"recent", :language=>"ru", "until"=> Date.today - (i-1).days, "since"=> Date.today - i.days}
+      tweets = tweet_client.search(keywords, params).take(30)
+      tweets.each do |tweet|
+        tweet_message = remove_url(tweet.text.dup)
+        if documents.where(tweet: tweet_message).ne(sentiment_in: nil).exists?
+          prev_tweet = documents.where(tweet: tweet_message).ne(sentiment_in: nil).last
+          document = documents.create(tweet: tweet_message, status: status, created_at: tweet.created_at, number_of_followers: tweet.user.followers_count, number_of_friends: tweet.user.friends_count, user_verified: (tweet.user.verified? ? 1 : 0), sentiment_id: prev_tweet.sentiment_id)
+        else
+          document = documents.create(tweet: tweet_message, status: status, created_at: tweet.created_at, number_of_followers: tweet.user.followers_count, number_of_friends: tweet.user.friends_count, user_verified: (tweet.user.verified? ? 1 : 0))
+        end
+      end      
+    end
   end
   
   def load_tweets(status)

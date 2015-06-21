@@ -8,7 +8,7 @@ module Twisent
     def initialize(company, granularity = nil, period = nil)
       @company = company
       @granularity = (granularity || :day).to_sym
-      @period = period || {start: last_working_minute - 1.send(next_granularity), finish: last_working_minute}
+      @period = period || {start: last_working_minute - 1.send(next_granularity), finish: Time.now}
       retrieve_data
     end
 
@@ -52,7 +52,7 @@ module Twisent
       when :minute
         prev_value = 0
         clusters.order("created_at asc").each do |cluster|
-          cluster.minutly.sort_by{|k,v| k.to_i}.to_h.each do |identificator, values|
+          Hash[cluster.minutly.sort_by{|k,v| k.to_i}].each do |identificator, values|
             moment = Time.new(cluster.created_at.year, cluster.created_at.month, cluster.created_at.day, identificator.to_i / 60, identificator.to_i % 60, 1)
             if moment.between? period[:start], period[:finish]
               data[moment] = {
@@ -70,7 +70,7 @@ module Twisent
       when :hour
         prev_value = 0
         clusters.order("created_at asc").each do |cluster|
-          cluster.hourly.sort_by{|k,v| k.to_i}.to_h.each do |identificator, values|
+          Hash[cluster.hourly.sort_by{|k,v| k.to_i}].each do |identificator, values|
             moment = Time.new(cluster.created_at.year, cluster.created_at.month, cluster.created_at.day, identificator.to_i, 1, 1)
             if moment.between? period[:start], period[:finish]
               data[moment] = {

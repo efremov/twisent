@@ -8,7 +8,7 @@
           
       .summary_metrics
         = summary_metric((@company.current_cluster.csi_growth || 1) * 100, "CSI growth rate","%")   
-        = summary_metric((@company.current_cluster.price_growth || 1) * 100, "Price growth rate","%")  
+        = summary_metric((@company.current_cluster.price_growth || 1) * 100, "Изменение","%")  
 
       
   .col-md-12.col-sm-12
